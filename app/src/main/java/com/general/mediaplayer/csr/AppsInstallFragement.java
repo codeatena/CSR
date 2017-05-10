@@ -25,7 +25,6 @@ public class AppsInstallFragement extends Fragment {
    public static final String EXTERN_SD_FILES_PATH = "/mnt/external_sd/ApkFiles";
    //public static final String EXTERN_SD_FILES_PATH = "/mnt/extSdCard/ApkFiles";
 
-   public static final String FILES_PATH = "\\ApkFiles\\";
    public static final String USB_FILES_PATH = "/mnt/usbhost1/ApkFiles";
 
    private ApkFileAdapter mApkFileAdapter;
