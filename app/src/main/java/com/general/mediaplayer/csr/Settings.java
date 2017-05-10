@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.PermissionRequest;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -39,13 +40,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.general.mediaplayer.csr.wifi.WifiEnabler;
+import com.general.mediaplayer.csr.wifi.WifiSettingsFragment;
 import com.hklt.hidusb.Hidusb;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -903,14 +899,16 @@ public class Settings extends PreferenceActivity
     protected void onCreate(Bundle paramBundle)
     {
 
-        Dexter.withActivity(this)
-                .withPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                .withListener(new PermissionListener() {
-                    @Override public void onPermissionGranted(PermissionGrantedResponse response) {/* ... */}
-                    @Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
-                    @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
-                })
-                .check();
+        super.onCreate(paramBundle);
+
+//        Dexter.withActivity(this)
+//                .withPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+//                .withListener(new PermissionListener() {
+//                    @Override public void onPermissionGranted(PermissionGrantedResponse response) {/* ... */}
+//                    @Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
+//                    @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
+//                })
+//                .check();
 
         if(this.getIntent().getBooleanExtra("restart_app_again", false)) {
             Log.v("", "===settings  onCreate===");
@@ -928,7 +926,6 @@ public class Settings extends PreferenceActivity
         }
 
         this.mInLocalHeaderSwitch = true;
-        super.onCreate(paramBundle);
         this.mInLocalHeaderSwitch = false;
         this.DisableScreenOff();
         this.mUsbHidCmd = new UsbHidCmd();
@@ -1585,7 +1582,14 @@ public class Settings extends PreferenceActivity
 
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        return SettingsPreferenceFragment.class.getName().equals(fragmentName);
+        //return SettingsPreferenceFragment.class.getName().equals(fragmentName);
+
+        return  AppsManagerSettings.class.getName().equals(fragmentName) ||
+                AppsAutoRunFragement.class.getName().equals(fragmentName) ||
+                AppsUninstallFragement.class.getName().equals(fragmentName) ||
+                AppsInstallFragement.class.getName().equals(fragmentName) ||
+                NetworkSettings.class.getName().equals(fragmentName) ||
+                WifiSettingsFragment.class.getName().equals(fragmentName);
     }
 }
 
