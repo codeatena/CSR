@@ -7,20 +7,19 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import com.general.mediaplayer.csr.Settings;
+
 import com.general.mediaplayer.csr.services.CsrManagerService;
+
 import java.io.File;
 import java.util.List;
 
 public class MediaPlayerBroadcastReceiver extends BroadcastReceiver {
 
    static final String ACTION = "android.intent.action.BOOT_COMPLETED";
-   private static final String DIR_SUPER_MANAGER_KEY = "/mnt/external_sd/AdministratorPassword";
+   private static final String DIR_SUPER_MANAGER_KEY = "/mnt/external_sd/AdministratorPassword1613";
    private static final String MEDIAPLAYER_START_ACTIVITY = ".ScanMediaActivity";
    private static final int MSG_BASE = 100;
    private static final int MSG_START_APP = 101;
