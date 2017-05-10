@@ -46,7 +46,7 @@ public class ApkFileAdapter extends BaseAdapter {
            try
            {
                Class localClass1 = Class.forName("android.content.pm.PackageParser");
-               Object localObject1 = localClass1.getConstructor(new Class[] { String.class }).newInstance(new Object[] { paramString });
+               Object localObject1 = localClass1.getConstructor(String.class).newInstance(paramString);
                DisplayMetrics localDisplayMetrics = new DisplayMetrics();
                localDisplayMetrics.setToDefaults();
                Class[] arrayOfClass1 = new Class[4];
@@ -70,7 +70,7 @@ public class ApkFileAdapter extends BaseAdapter {
                ApplicationInfo localApplicationInfo = (ApplicationInfo)localField.get(localObject2);
                Class localClass2 = Class.forName("android.content.res.AssetManager");
                Object localObject3 = localClass2.newInstance();
-               localClass2.getDeclaredMethod("addAssetPath", new Class[] { String.class }).invoke(localObject3, new Object[] { paramString });
+               localClass2.getDeclaredMethod("addAssetPath", String.class).invoke(localObject3, paramString);
                Resources localResources1 = paramContext.getResources();
                Class[] arrayOfClass2 = new Class[3];
                arrayOfClass2[0] = localObject3.getClass();
