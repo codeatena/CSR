@@ -3,6 +3,7 @@ package com.general.mediaplayer.csr;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -19,6 +20,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
+
+import static android.R.attr.versionName;
 
 public class ApkFileAdapter extends BaseAdapter {
 
@@ -45,8 +48,25 @@ public class ApkFileAdapter extends BaseAdapter {
        {
            try
            {
+               PackageManager pm = paramContext.getPackageManager();
+
+               PackageInfo packageInfo = pm.getPackageArchiveInfo(paramString, PackageManager.GET_ACTIVITIES);
+               packageInfo.applicationInfo.sourceDir = paramString;
+               packageInfo.applicationInfo.publicSourceDir = paramString;
+               CharSequence label = pm.getApplicationLabel(packageInfo.applicationInfo);
+
+               localApkFileInfo = new ApkFileInfo();
+
+               localApkFileInfo.setAppVersion(packageInfo.versionName);
+               localApkFileInfo.setPath(paramString);
+               localApkFileInfo.setapkFileName((String) label);
+               localApkFileInfo.setPackageName(packageInfo.applicationInfo.packageName);
+               localApkFileInfo.setDrawable(packageInfo.applicationInfo.loadIcon(pm));
+
+               /*
                Class localClass1 = Class.forName("android.content.pm.PackageParser");
-               Object localObject1 = localClass1.getConstructor(String.class).newInstance(paramString);
+               Class<?>[] typeArgs = { String.class }; Object[] valueArgs = { paramString };
+               Object localObject1 = localClass1.getConstructor(typeArgs).newInstance(valueArgs);
                DisplayMetrics localDisplayMetrics = new DisplayMetrics();
                localDisplayMetrics.setToDefaults();
                Class[] arrayOfClass1 = new Class[4];
@@ -98,17 +118,20 @@ public class ApkFileAdapter extends BaseAdapter {
                        break;
                    localApkFileInfo.setAppVersion(localPackageInfo.versionName);
                    return localApkFileInfo;
-               }
+               }*/
+
+               return localApkFileInfo;
+
            }
            catch (Exception localException)
            {
                localException.printStackTrace();
                return null;
            }
-           String str = localFile1.getName();
-           localApkFileInfo.setapkFileName(str.substring(0, str.lastIndexOf(".")));
+           //String str = localFile1.getName();
+           //localApkFileInfo.setapkFileName(str.substring(0, str.lastIndexOf(".")));
        }
-       /*label xx:*/ return null;
+       /*label xx:*/
    }
 
    public int getCount() {

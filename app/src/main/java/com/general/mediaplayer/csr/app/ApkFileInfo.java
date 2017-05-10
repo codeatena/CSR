@@ -8,7 +8,6 @@ public class ApkFileInfo {
    private String apkPath;
    private String appVersion;
    private Drawable drawable;
-   private Boolean isCilentApk;
    private String packageName;
 
 
@@ -18,10 +17,6 @@ public class ApkFileInfo {
 
    public Drawable getDrawable() {
       return this.drawable;
-   }
-
-   public Boolean getIsCilentApp() {
-      return this.isCilentApk;
    }
 
    public String getPackageName() {
@@ -42,10 +37,6 @@ public class ApkFileInfo {
 
    public void setDrawable(Drawable var1) {
       this.drawable = var1;
-   }
-
-   public void setIsCilentApp(Boolean var1) {
-      this.isCilentApk = var1;
    }
 
    public void setPackageName(String var1) {
