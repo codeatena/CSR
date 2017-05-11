@@ -32,11 +32,11 @@ public class CallAlarm extends BroadcastReceiver {
    private void startReboot() {
       Log.v(TAG, "==CallAlarm==startReboot==");
 
-      try {
-         Runtime.getRuntime().exec(new String[]{"su", "-c", "reboot"});
-      } catch (Exception var3) {
-         var3.printStackTrace();
-      }
+//      try {
+//         Runtime.getRuntime().exec(new String[]{"su", "-c", "reboot"});
+//      } catch (Exception var3) {
+//         var3.printStackTrace();
+//      }
    }
 
    public void onReceive(Context context, Intent intent) {

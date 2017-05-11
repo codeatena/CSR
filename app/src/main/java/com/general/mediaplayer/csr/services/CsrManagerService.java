@@ -318,13 +318,13 @@ public class CsrManagerService extends Service {
          Log.v(TAG, "==CsrManagerService==startReboot==do=========");
          this.mRebootIsDo = true;
 
-         try {
-            Runtime.getRuntime().exec("su -c reboot");
-         } catch (IOException var4) {
-            this.mRebootIsDo = false;
-            var4.printStackTrace();
-            return;
-         }
+//         try {
+//            Runtime.getRuntime().exec("su -c reboot");
+//         } catch (IOException var4) {
+//            this.mRebootIsDo = false;
+//            var4.printStackTrace();
+//            return;
+//         }
       }
 
    }
