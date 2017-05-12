@@ -1,25 +1,23 @@
 package com.general.mediaplayer.csr.services;
 
 import android.app.ActivityManager;
-import android.app.Service;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
+
 import com.general.mediaplayer.csr.R;
 import com.general.mediaplayer.csr.Settings;
-import com.general.mediaplayer.csr.services.AlarmHelper;
 import com.hklt.watchdog.wdg;
+
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -49,25 +47,25 @@ public class CsrManagerService extends Service {
             CsrManagerService.this.set24HourReset();
          } else {
             if(intent.getAction().equalsIgnoreCase(RECEIVER_APP_RUN_ACTION)) {
-               CsrManagerService.this.mAppRunTimeoutCnt = 0;
-               if(intent.getBooleanExtra("Csr_app_run", false)) {
-                  CsrManagerService.this.mAppRunTimeoutCntMax = 480;
-                  return;
-               }
-
-               CsrManagerService.this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
+//               CsrManagerService.this.mAppRunTimeoutCnt = 0;
+//               if(intent.getBooleanExtra("Csr_app_run", false)) {
+//                  CsrManagerService.this.mAppRunTimeoutCntMax = 480;
+//                  return;
+//               }
+//
+//               CsrManagerService.this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
                return;
             }
 
             if(intent.getAction().equalsIgnoreCase(SYS_CSR_RESTART_ACTION)) {
                Log.v(TAG, "====m24HourResetReceiver===com.general.mediaplayer.csr.restart");
                if(intent.getBooleanExtra("Csr_app_run", false)) {
-                  CsrManagerService.this.mAppRunTimeoutCntMax = 480;
+                  //CsrManagerService.this.mAppRunTimeoutCntMax = 480;
                } else {
-                  CsrManagerService.this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
+                  //CsrManagerService.this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
                }
 
-               CsrManagerService.this.startRunCsrThread(context, intent);
+               //CsrManagerService.this.startRunCsrThread(context, intent);
                Log.v(TAG, "====m24HourResetReceiver=== end");
                return;
             }
@@ -86,21 +84,14 @@ public class CsrManagerService extends Service {
       }
    };
    private AlarmHelper mAlarmHelper;
-   private int mAppRunTimeoutCnt = 0;
-   private int mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
+   //private int mAppRunTimeoutCnt = 0;
+   //private int mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
    private Context mContext;
    private int mCurrentHour = 0;
    private int mCurrentMinute = 0;
    private Editor mEditor;
-   private long mFristStartTimeMs = 0L;
-   private Handler mHandler = new Handler() {
-      public void handleMessage(Message msg) {
-         switch(msg.what) {
-         case MSG_TIMER:
-         default:
-         }
-      }
-   };
+   //private long mFristStartTimeMs = 0L;
+
    private boolean mIsEnableReset = false;
    private boolean mIsStopWatchdog = false;
    private boolean mIsWdgOutHigh = false;
@@ -109,19 +100,17 @@ public class CsrManagerService extends Service {
    private int mQuitRunCsrCnt = 0;
    private boolean mQuitRunCsrThread = false;
    private boolean mRebootIsDo = false;
-   private int mResetHour = 2;
-   private int mResetMinute = 0;
    private int mSendSuperManagerModeMessageCnt = 0;
    private SharedPreferences mSharedPreferences;
    private int mSuperManagerKeyIn = 0;
    private int mSuperManagerKeyout = 0;
    private boolean mSuperManagerMode = false;
-   private Runnable mTimerRunable = new Runnable() {
-      public void run() {
-         CsrManagerService.this.onTimer();
-         CsrManagerService.this.mHandler.postDelayed(this, 500L);
-      }
-   };
+//   private Runnable mTimerRunable = new Runnable() {
+//      public void run() {
+//         CsrManagerService.this.onTimer();
+//         CsrManagerService.this.mHandler.postDelayed(this, 500L);
+//      }
+//   };
    private wdg mwdg;
    private int mwdgLogCnt = 0;
 
@@ -150,62 +139,10 @@ public class CsrManagerService extends Service {
 
    private void get24HourResetInfo() {
       String strMediaplayerSettingSp = this.getResources().getString(R.string.mediaplayer_setting_sp);
-      String strAlarmHourKey = this.getResources().getString(R.string.alarm_set_hour_sp_key);
-      String strAlarmMinuteKey = this.getResources().getString(R.string.alarm_set_minute_sp_key);
       String strOpenAlarmKey = this.getResources().getString(R.string.open_alarm_sp_key);
       this.mSharedPreferences = this.getApplicationContext().getSharedPreferences(strMediaplayerSettingSp, 2);
-      this.mResetHour = this.mSharedPreferences.getInt(strAlarmHourKey, 2);
-      this.mResetMinute = this.mSharedPreferences.getInt(strAlarmMinuteKey, 0);
       this.mIsEnableReset = this.mSharedPreferences.getBoolean(strOpenAlarmKey, false);
-      if(this.mResetHour >= 24) {
-         this.mResetHour %= 24;
-      }
 
-      if(this.mResetMinute >= 60) {
-         this.mResetMinute %= 60;
-      }
-
-      Log.v(" ", "==get24HourResetInfo==mResetHour=" + this.mResetHour + "==mResetMinute=" + this.mResetMinute);
-      int var6 = Calendar.getInstance().getTimeZone().getRawOffset() / 1000 / 60;
-      int var7 = 60 * this.mResetHour + this.mResetMinute;
-      Log.v(" ", "==get24HourResetInfo==currentTimeOffSetMin=" + var6 + "==alarmTimeMin=" + var7);
-      int var9 = var7 + var6;
-      if(var9 >= 0) {
-         if(var9 >= 1440) {
-            var9 -= 1440;
-         }
-      } else {
-         var9 += 1440;
-      }
-
-      int var10 = var9 / 60;
-      int var11 = var9 % 60;
-      Log.v(" ", "==get24HourResetInfo==mResetHour=" + var10 + "==mResetMinute=" + var11);
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTimeInMillis(System.currentTimeMillis());
-      this.mCurrentHour = calendar.get(11);
-      this.mCurrentMinute = calendar.get(12);
-      if(var10 > this.mCurrentHour) {
-         if(var11 > this.mCurrentMinute) {
-            this.mFristStartTimeMs = (long)(1000 * 60 * 60 * (var10 - this.mCurrentHour) + 1000 * 60 * (var11 - this.mCurrentMinute));
-         } else {
-            this.mFristStartTimeMs = (long)(1000 * 60 * 60 * (-1 + (var10 - this.mCurrentHour)) + 1000 * 60 * (var11 + 60 - this.mCurrentMinute));
-         }
-      } else if(var10 == this.mCurrentHour) {
-         if(var11 > this.mCurrentMinute) {
-            this.mFristStartTimeMs = (long)(1000 * 60 * 60 * (var10 - this.mCurrentHour) + 1000 * 60 * (var11 - this.mCurrentMinute));
-         } else {
-            this.mFristStartTimeMs = (long)(1000 * 60 * 60 * (24 + -1 + (var10 - this.mCurrentHour)) + 1000 * 60 * (var11 + 60 - this.mCurrentMinute));
-         }
-      } else if(var11 > this.mCurrentMinute) {
-         this.mFristStartTimeMs = (long)(1000 * 60 * 60 * (24 + (var10 - this.mCurrentHour)) + 1000 * 60 * (var11 - this.mCurrentMinute));
-      } else {
-         this.mFristStartTimeMs = (long)(1000 * 60 * 60 * (24 + -1 + (var10 - this.mCurrentHour)) + 1000 * 60 * (var11 + 60 - this.mCurrentMinute));
-      }
-
-      Log.v("ResetTime ", "mCurrentHour=" + this.mCurrentHour + "  mCurrentMinute=" + this.mCurrentMinute);
-      Log.v("ResetTime ", "mResetHour=" + var10 + "  mResetMinute=" + var11);
-      Log.v("ResetTime ", "mFristStartTimeMs=" + this.mFristStartTimeMs + " mIsEnableReset=" + this.mIsEnableReset);
    }
 
    private void getTopTask(Context context) {
@@ -215,7 +152,7 @@ public class CsrManagerService extends Service {
          String strClassName = runningTaskInfo.topActivity.getClassName();
          if(!this.IsSpecAppPackage(strPackName, stringAPK_Package_Spec)) {
             if(strPackName.equalsIgnoreCase(stringAPK_CSR_Package_Spec)) {
-               this.mAppRunTimeoutCnt = 0;
+           //    this.mAppRunTimeoutCnt = 0;
                return;
             }
 
@@ -225,19 +162,19 @@ public class CsrManagerService extends Service {
             return;
          }
 
-         this.mAppRunTimeoutCnt = 0;
-         this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
+         //this.mAppRunTimeoutCnt = 0;
+         //this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
       }
    }
 
    private void onTimer() {
       this.testSuperManagerMode();
       this.sendWatchDogSign();
-      this.mAppRunTimeoutCnt++;
-      if(this.mAppRunTimeoutCnt >= this.mAppRunTimeoutCntMax && !this.mSuperManagerMode) {
+      //this.mAppRunTimeoutCnt ++;
+      //if(this.mAppRunTimeoutCnt >= this.mAppRunTimeoutCntMax && !this.mSuperManagerMode) {
          Log.v("onTimer", "============onTimer====APP_RUN_TIMEOUT_MAX====");
          this.startReboot();
-      }
+      //}
 
       Intent intent = new Intent();
       intent.setAction(SEND_APP_RUN_ACTION);
@@ -302,21 +239,46 @@ public class CsrManagerService extends Service {
    private void set24HourReset() {
       Log.v("ResetTime", "=============set24HourReset====");
       this.get24HourResetInfo();
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTimeInMillis(System.currentTimeMillis());
-      if(this.mIsEnableReset) {
-         this.mAlarmHelper.openAlarm(0, calendar.getTimeInMillis() + this.mFristStartTimeMs, 86400000L);
-         this.save24HourResetInMillis(Long.valueOf(calendar.getTimeInMillis() + this.mFristStartTimeMs));
+
+      if(!this.mIsEnableReset) {
+
+            resetRebootTime();
+
       } else {
-         this.mAlarmHelper.closeAlarm(0);
+
+         String strSpName = mContext.getResources().getString(R.string.mediaplayer_setting_sp);
+         String strAlarmInterval = mContext.getResources().getString(R.string.alarm_set_inmillis_sp_key);
+         long interval = mContext.getSharedPreferences(strSpName, 1).getLong(strAlarmInterval, 0L);
+         long currenttime = Calendar.getInstance().getTimeInMillis();
+         if (Math.abs(currenttime - interval) >= 600000L)
+         {
+            resetRebootTime();
+         }
       }
    }
 
+   private void resetRebootTime()
+   {
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTimeInMillis(System.currentTimeMillis());
+      String strMediaplayerSettingSp = mContext.getResources().getString(R.string.mediaplayer_setting_sp);
+      String strOpenAlarmKey = mContext.getResources().getString(R.string.open_alarm_sp_key);
+      SharedPreferences mSharedPreferences = mContext.getApplicationContext().getSharedPreferences(strMediaplayerSettingSp, Context.MODE_PRIVATE);
+      SharedPreferences.Editor editor = mSharedPreferences.edit();
+      editor.putBoolean(strOpenAlarmKey ,true);
+      editor.apply();
+
+      this.save24HourResetInMillis(calendar.getTimeInMillis());
+      this.mAlarmHelper.closeAlarm(0);
+      //this.mAlarmHelper.openAlarm(0, calendar.getTimeInMillis() , 86400000L);
+      this.mAlarmHelper.openAlarm(0, calendar.getTimeInMillis() , 3600000L);
+   }
+
    private void startReboot() {
-      Log.v(TAG, "==CsrManagerService==startReboot==");
-      if(!this.mRebootIsDo) {
-         Log.v(TAG, "==CsrManagerService==startReboot==do=========");
-         this.mRebootIsDo = true;
+//      Log.v(TAG, "==CsrManagerService==startReboot==");
+//      if(!this.mRebootIsDo) {
+//         Log.v(TAG, "==CsrManagerService==startReboot==do=========");
+//         this.mRebootIsDo = true;
 
 //         try {
 //            Runtime.getRuntime().exec("su -c reboot");
@@ -325,7 +287,7 @@ public class CsrManagerService extends Service {
 //            var4.printStackTrace();
 //            return;
 //         }
-      }
+//      }
 
    }
 
@@ -434,11 +396,11 @@ public class CsrManagerService extends Service {
       intentFilter.addAction(RECEIVER_APP_RUN_ACTION);
       intentFilter.addAction(SYS_CSR_RESTART_ACTION);
       this.registerReceiver(this.m24HourResetReceiver, intentFilter);
-      this.mHandler.postDelayed(this.mTimerRunable, 500L);
+      //this.mHandler.postDelayed(this.mTimerRunable, 500L);
       Intent sendIntent = new Intent();
       sendIntent.setAction(RESET_24HOUR_ACTION);
       this.sendBroadcast(sendIntent);
-      this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
+      //this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
       this.mPowerOnFirst = true;
       this.mPowerOnFirstCnt = 0;
    }
@@ -447,7 +409,7 @@ public class CsrManagerService extends Service {
    public void onDestroy() {
       this.unregisterReceiver(this.m24HourResetReceiver);
       Log.v(TAG, "===onDestroy==");
-      this.mHandler.removeCallbacks(this.mTimerRunable);
+      //this.mHandler.removeCallbacks(this.mTimerRunable);
       super.onDestroy();
    }
 

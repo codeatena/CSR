@@ -1,6 +1,5 @@
 package com.general.mediaplayer.csr;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
@@ -29,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.PermissionRequest;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -39,6 +37,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.general.mediaplayer.csr.services.CsrManagerService;
 import com.general.mediaplayer.csr.wifi.WifiEnabler;
 import com.general.mediaplayer.csr.wifi.WifiSettingsFragment;
 import com.hklt.hidusb.Hidusb;
@@ -410,9 +409,9 @@ public class Settings extends PreferenceActivity
     private void startCsrManagerService(Context paramContext)
     {
         Log.v(" ", "===Settings start startCsrManagerService==");
-      /*
-    paramContext.startService(new Intent(this, CsrManagerService.class));
-    */
+
+        paramContext.startService(new Intent(this, CsrManagerService.class));
+
     }
 
     private void switchToHeaderLocal(PreferenceActivity.Header paramHeader)
