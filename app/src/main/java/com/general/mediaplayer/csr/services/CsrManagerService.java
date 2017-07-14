@@ -270,8 +270,8 @@ public class CsrManagerService extends Service {
 
       this.save24HourResetInMillis(calendar.getTimeInMillis());
       this.mAlarmHelper.closeAlarm(0);
-      //this.mAlarmHelper.openAlarm(0, calendar.getTimeInMillis() , 86400000L);
       this.mAlarmHelper.openAlarm(0, calendar.getTimeInMillis() , 3600000L);
+
    }
 
    private void startReboot() {
@@ -372,12 +372,12 @@ public class CsrManagerService extends Service {
       return var3;
    }
 
-    @Override
+   @Override
    public IBinder onBind(Intent intent) {
       return null;
    }
 
-    @Override
+   @Override
    public void onCreate() {
       super.onCreate();
       Log.v(TAG, "===onCreate==");
