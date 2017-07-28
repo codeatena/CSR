@@ -1,5 +1,6 @@
 package com.general.mediaplayer.csr;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -11,18 +12,20 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+
 import com.general.mediaplayer.csr.app.AppInfo;
 import com.general.mediaplayer.csr.app.PakageInfoProvider;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +56,10 @@ public class AppsUninstallFragement extends Fragment {
    private boolean mIsInstalledAppViewprefer = false;
    private PakageInfoProvider mPakageInfoProvider;
 
+   @SuppressLint("ValidFragment")
+   public AppsUninstallFragement() {
+
+   }
 
    private void LoadInstalledAppInfo() {
       (new Thread() {

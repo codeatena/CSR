@@ -1,5 +1,6 @@
 package com.general.mediaplayer.csr;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -13,8 +14,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 import android.widget.Button;
-import com.general.mediaplayer.csr.ButtonBarHandler;
-import com.general.mediaplayer.csr.DialogCreatable;
 
 public class SettingsPreferenceFragment extends PreferenceFragment implements DialogCreatable {
 
@@ -117,7 +116,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Di
       private OnDismissListener mOnDismissListener;
       private Fragment mParentFragment;
 
-
+      @SuppressLint("ValidFragment")
       public SettingsDialogFragment() {}
 
       public SettingsDialogFragment(DialogCreatable var1, int var2) {

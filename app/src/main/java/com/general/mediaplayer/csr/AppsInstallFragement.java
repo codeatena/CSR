@@ -1,5 +1,6 @@
 package com.general.mediaplayer.csr;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -38,6 +39,10 @@ public class AppsInstallFragement extends Fragment {
    private TextView mTxtPath;
    private Button mUsbButton;
 
+   @SuppressLint("ValidFragment")
+   public AppsInstallFragement() {
+
+   }
 
    private void initView() {
       this.mApkFileListView = (ListView)this.mContentView.findViewById(R.id.app_install_file_listview);

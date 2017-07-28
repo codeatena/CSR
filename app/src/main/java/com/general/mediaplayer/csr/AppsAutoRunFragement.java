@@ -1,21 +1,23 @@
 package com.general.mediaplayer.csr;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
-import com.general.mediaplayer.csr.Settings;
+
 import com.general.mediaplayer.csr.app.AppInfo;
 import com.general.mediaplayer.csr.app.PakageInfoProvider;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,6 +54,10 @@ public class AppsAutoRunFragement extends DialogFragment {
    private PakageInfoProvider mPakageInfoProvider;
    private SharedPreferences mSharedPreferences;
 
+   @SuppressLint("ValidFragment")
+   public AppsAutoRunFragement() {
+
+   }
 
    private void LoadInstalledAppInfo() {
       (new Thread() {

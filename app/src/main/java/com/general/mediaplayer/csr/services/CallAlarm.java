@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.general.mediaplayer.csr.R;
@@ -12,10 +13,7 @@ import java.util.Calendar;
 
 public class CallAlarm extends BroadcastReceiver {
 
-   private static final long MAX_ALLOW_ALARM_TIME_MILLIS = 600000L;
-   private static final String RESET_24HOUR_ACTION = "com.general.mediaplayer.24HourReset";
    public static final String TAG = "CallAlarm";
-
 
    private long get24HourResetInMillis(Context context) {
       String strSpName = context.getResources().getString(R.string.mediaplayer_setting_sp);
@@ -35,17 +33,35 @@ public class CallAlarm extends BroadcastReceiver {
       Log.v(TAG, "==CallAlarm==startReboot==");
 
       try {
-         Runtime.getRuntime().exec(new String[]{"su", "-c", "reboot"});
-      } catch (Exception var3) {
-         var3.printStackTrace();
+         Process proc = Runtime.getRuntime().exec(new String[]{"/system/xbin/su", "-c", "reboot"});
+         proc.waitFor();
+      } catch (Exception ex) {
+         ex.printStackTrace();
       }
+   }
+
+   private void startReboot(Context context) {
+      Log.v(TAG, "==CallAlarm==startReboot==");
+
+      /*
+      try {
+         Process proc = Runtime.getRuntime().exec(new String[]{"/system/xbin/su", "-c", "reboot"});
+         proc.waitFor();
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }*/
+
+      PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+      pm.reboot(null);
+
    }
 
    public void onReceive(Context context, Intent intent) {
 
       float diff = Math.abs(this.get24HourResetInMillis(context) - this.getCurrentTimeInMillis());
       Log.v("Diff Time" , String.valueOf(diff / 1000)) ;
-      if (Math.abs(diff) >= 86400000L){
+      //if (Math.abs(diff) >= 86400000L){
+      if (Math.abs(diff) >= 3600000L){
 
          Log.v("===", "==CallAlarm==onReceive=action=" + intent.getAction());
 
@@ -56,7 +72,7 @@ public class CallAlarm extends BroadcastReceiver {
          editor.putBoolean(strOpenAlarmKey ,false);
          editor.apply();
 
-         this.startReboot();
+         this.startReboot(context);
       }
 
    }

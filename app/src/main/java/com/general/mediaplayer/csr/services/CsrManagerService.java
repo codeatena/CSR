@@ -246,14 +246,11 @@ public class CsrManagerService extends Service {
 
       } else {
 
-         String strSpName = mContext.getResources().getString(R.string.mediaplayer_setting_sp);
-         String strAlarmInterval = mContext.getResources().getString(R.string.alarm_set_inmillis_sp_key);
-         long interval = mContext.getSharedPreferences(strSpName, 1).getLong(strAlarmInterval, 0L);
-         long currenttime = Calendar.getInstance().getTimeInMillis();
-         if (Math.abs(currenttime - interval) >= 600000L)
-         {
-            resetRebootTime();
-         }
+         Calendar calendar = Calendar.getInstance();
+         calendar.setTimeInMillis(System.currentTimeMillis());
+         this.mAlarmHelper.closeAlarm(0);
+         this.mAlarmHelper.openAlarm(0, calendar.getTimeInMillis() , 600000L);
+
       }
    }
 
@@ -270,7 +267,7 @@ public class CsrManagerService extends Service {
 
       this.save24HourResetInMillis(calendar.getTimeInMillis());
       this.mAlarmHelper.closeAlarm(0);
-      this.mAlarmHelper.openAlarm(0, calendar.getTimeInMillis() , 3600000L);
+      this.mAlarmHelper.openAlarm(0, calendar.getTimeInMillis() , 600000L);
 
    }
 
