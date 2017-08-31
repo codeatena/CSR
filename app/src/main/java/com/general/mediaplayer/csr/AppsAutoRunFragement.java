@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +37,7 @@ public class AppsAutoRunFragement extends DialogFragment {
          switch(var1.what) {
          case 1001:
             AppsAutoRunFragement.this.doBack();
+
             return;
          case 1002:
             AppsAutoRunFragement.this.initCilentAppInfo();
@@ -191,6 +195,9 @@ public class AppsAutoRunFragement extends DialogFragment {
                Message var5 = new Message();
                var5.what = 1001;
                AppsAutoRunFragement.this.handler.sendMessage(var5);
+
+               openApp(AppsAutoRunFragement.this.getActivity() ,mAutoRunAppPackageName);
+
                return;
             }
 
@@ -207,5 +214,17 @@ public class AppsAutoRunFragement extends DialogFragment {
       public void setPosition(int var1) {
          this.index = var1;
       }
+   }
+
+   public  boolean openApp(Context context, String packageName) {
+      PackageManager manager = context.getPackageManager();
+      Intent i = manager.getLaunchIntentForPackage(packageName);
+      if (i == null) {
+         return false;
+         //throw new PackageManager.NameNotFoundException();
+      }
+      i.addCategory(Intent.CATEGORY_LAUNCHER);
+      context.startActivity(i);
+      return true;
    }
 }

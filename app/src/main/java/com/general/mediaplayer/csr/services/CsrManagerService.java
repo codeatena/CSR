@@ -13,9 +13,15 @@ import android.content.SharedPreferences.Editor;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.general.mediaplayer.csr.MessageEvent;
 import com.general.mediaplayer.csr.R;
 import com.general.mediaplayer.csr.Settings;
+import com.general.mediaplayer.csr.Utils;
 import com.hklt.watchdog.wdg;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -24,7 +30,7 @@ import java.util.Iterator;
 
 public class CsrManagerService extends Service {
 
-   private static final String DIR_SUPER_MANAGER_KEY = "/mnt/external_sd/AdministratorPassword";
+   private String DIR_SUPER_MANAGER_KEY = "/mnt/external_sd/AdministratorPassword1613";
    private static final String IN_SUPER_MODE_KEY = "inSuperModeKey";
    private static final int MSG_BASE = 10000;
    private static final int MSG_TIMER = 10001;
@@ -400,14 +406,37 @@ public class CsrManagerService extends Service {
       //this.mAppRunTimeoutCntMax = APP_RUN_TIMEOUT_MAX;
       this.mPowerOnFirst = true;
       this.mPowerOnFirstCnt = 0;
+
+      EventBus.getDefault().register(this);
+
+      String paths[] = Utils.getExternalStorageDirectories(this);
+      if (paths.length > 0)
+         DIR_SUPER_MANAGER_KEY = paths[0] + "/AdministratorPassword1613";
+
    }
 
-    @Override
+   @Override
    public void onDestroy() {
       this.unregisterReceiver(this.m24HourResetReceiver);
       Log.v(TAG, "===onDestroy==");
       //this.mHandler.removeCallbacks(this.mTimerRunable);
       super.onDestroy();
+
+       EventBus.getDefault().unregister(this);
+   }
+
+   @Subscribe(threadMode = ThreadMode.BACKGROUND)
+   public void onMessageEvent(MessageEvent event) {
+      /* Do something */
+
+      Log.v(TAG, "===playing games , check again after 1 min delay==");
+
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTimeInMillis(System.currentTimeMillis());
+
+      this.mAlarmHelper.closeAlarm(0);
+      this.mAlarmHelper.setAlarm(0  , calendar.getTimeInMillis() + 60000);
+
    }
 
    public void startRunCsr(Context context, Intent intent) {

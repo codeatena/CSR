@@ -28,6 +28,15 @@ public class AlarmHelper {
       Intent intent = new Intent();
       intent.setClass(this.mContext, CallAlarm.class);
       PendingIntent pendingIntent = PendingIntent.getBroadcast(this.mContext, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-      this.mAlarmManager.setRepeating(0, triggerAtTime, interval, pendingIntent);
+      this.mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtTime, interval, pendingIntent);
+
    }
+
+   public void setAlarm(int requestCode, long triggerAtTime) {
+      Intent intent = new Intent();
+      intent.setClass(this.mContext, CallAlarm.class);
+      PendingIntent pendingIntent = PendingIntent.getBroadcast(this.mContext, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+      this.mAlarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtTime , pendingIntent);
+   }
+
 }

@@ -4,39 +4,32 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.general.mediaplayer.csr.services.CsrManagerService;
 
 import java.io.File;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static com.general.mediaplayer.csr.Settings.TAG;
 
 public class MediaPlayerBroadcastReceiver extends BroadcastReceiver {
 
    static final String ACTION = "android.intent.action.BOOT_COMPLETED";
-   private static final String DIR_SUPER_MANAGER_KEY = "/mnt/external_sd/AdministratorPassword1613";
+   private String DIR_SUPER_MANAGER_KEY = "/mnt/external_sd/AdministratorPassword1613";
    private static final String MEDIAPLAYER_START_ACTIVITY = ".ScanMediaActivity";
    private static final int MSG_BASE = 100;
    private static final int MSG_START_APP = 101;
    static final String START_CSR_ACTION = "com.android.intent.CSR";
    private static final String SYS_CSR_RESTART_ACTION = "com.general.mediaplayer.csr.restart";
    private Context mContext;
-   private Handler mHandler = new Handler() {
-      public void handleMessage(Message var1) {
-         switch(var1.what) {
-         case MSG_START_APP:
-            MediaPlayerBroadcastReceiver.this.onBootCompleted(MediaPlayerBroadcastReceiver.this.mContext, (Intent)null);
-            return;
-         default:
-         }
-      }
-   };
-
 
    private boolean checkSuperManagerKey() {
       File var1 = new File(DIR_SUPER_MANAGER_KEY);
@@ -147,38 +140,95 @@ public class MediaPlayerBroadcastReceiver extends BroadcastReceiver {
       }
    }
 
-   public void onBootCompleted(Context paramContext, Intent intent) {
-      String var3 = this.getAutoRunAppPackage(paramContext);
-      Log.v(" ", "========onBootCompleted=====strPackageName=" + var3);
-      if(!this.checkSuperManagerKey()) {
-         if(var3 != null) {
-             //String str = new StringBuilder().append(var3).append(".ScanMediaActivity").toString();
-             String str = var3;
-             openApp(paramContext, str);
-         } else {
-            Intent var5 = new Intent(paramContext, Settings.class);
-            var5.addFlags(268435456);
-            var5.putExtra("restart_app_again", true);
-            Log.v("", "===broadcastReceiver onBootCompleted===");
-            paramContext.startActivity(var5);
+   final Handler handler = new Handler();
+   public void onBootCompleted(final Context paramContext, Intent intent) {
+
+      TimerTask doAsynchronousTask = new TimerTask() {
+         @Override
+         public void run() {
+
+            //Perform background work here
+            handler.post(new Runnable() {
+               public void run() {
+
+                  String var3 = getAutoRunAppPackage(paramContext);
+                  Log.v(" ", "========onBootCompleted=====strPackageName=" + var3);
+                  if(!checkSuperManagerKey()) {
+                     if(var3 != null) {
+                        //String str = new StringBuilder().append(var3).append(".ScanMediaActivity").toString();
+                        String str = var3;
+                        openApp(paramContext, str);
+                     } else {
+                        Intent var5 = new Intent(paramContext, Settings.class);
+//                        var5.addFlags(268435456);
+//                        var5.putExtra("restart_app_again", false);
+                        Log.v("", "===broadcastReceiver onBootCompleted===");
+                        paramContext.startActivity(var5);
+                     }
+                  }
+                  else
+                  {
+                     Intent var5 = new Intent(paramContext, Settings.class);
+                     var5.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                     Log.v("", "===broadcastReceiver onBootCompleted===");
+                     paramContext.startActivity(var5);
+                  }
+
+               }
+            });
          }
-      }
+      };
+      Timer timer = new Timer();
+      timer.schedule(doAsynchronousTask, 3000);
    }
 
    public void onReceive(Context context, Intent intent) {
+
+      String paths[] = Utils.getExternalStorageDirectories(context);
+      if (paths.length > 0)
+         DIR_SUPER_MANAGER_KEY = paths[0] + "/AdministratorPassword1613";
+
       if(intent.getAction().equals(ACTION)) {
          this.startCsrManagerService(context);
          this.onBootCompleted(context, intent);
       } else if(intent.getAction().equals(START_CSR_ACTION)) {
+
          Log.v("com.android.intent.CSR", "=======Start csr Receiver in Csr============");
-         this.startCsrManagerService(context);
-         (new Intent(context, Settings.class)).addFlags(268435456);
-         Intent var5 = new Intent();
-         var5.setAction(SYS_CSR_RESTART_ACTION);
-         var5.putExtra("Csr_app_run", true);
-         context.sendBroadcast(var5);
-         return;
+//         this.startCsrManagerService(context);
+//         (new Intent(context, Settings.class)).addFlags(268435456);
+//         Intent var5 = new Intent();
+//         var5.setAction(SYS_CSR_RESTART_ACTION);
+//         var5.putExtra("Csr_app_run", true);
+//         context.sendBroadcast(var5);
+
+         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+         Log.d(TAG ,sharedText);
+
+         if (sharedText.equals("enable_reboot"))
+            enableReboot(context);
+         else
+            disableReboot(context);
       }
+
+   }
+
+   public void enableReboot(Context context)
+   {
+      String strMediaplayerSettingSp = context.getResources().getString(R.string.mediaplayer_setting_sp);
+      SharedPreferences mSharedPreferences = context.getApplicationContext().getSharedPreferences(strMediaplayerSettingSp, Context.MODE_PRIVATE);
+      SharedPreferences.Editor editor = mSharedPreferences.edit();
+      editor.putBoolean("rebootenable" ,true);
+      editor.apply();
+
+   }
+
+   public void disableReboot(Context context)
+   {
+      String strMediaplayerSettingSp = context.getResources().getString(R.string.mediaplayer_setting_sp);
+      SharedPreferences mSharedPreferences = context.getApplicationContext().getSharedPreferences(strMediaplayerSettingSp, Context.MODE_PRIVATE);
+      SharedPreferences.Editor editor = mSharedPreferences.edit();
+      editor.putBoolean("rebootenable" ,false);
+      editor.apply();
 
    }
 

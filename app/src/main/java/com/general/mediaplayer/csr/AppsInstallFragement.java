@@ -23,7 +23,7 @@ import java.io.File;
 
 public class AppsInstallFragement extends Fragment {
 
-   public static final String EXTERN_SD_FILES_PATH = "/mnt/external_sd/ApkFiles";
+   public  String EXTERN_SD_FILES_PATH = "/mnt/external_sd/ApkFiles";
    //public static final String EXTERN_SD_FILES_PATH = "/mnt/extSdCard/ApkFiles";
 
    public static final String USB_FILES_PATH = "/mnt/usbhost1/ApkFiles";
@@ -50,6 +50,10 @@ public class AppsInstallFragement extends Fragment {
       if(this.mIsSwitchUsb) {
          this.mFilesPath = USB_FILES_PATH;
       } else {
+
+         String paths[] = Utils.getExternalStorageDirectories(this.getActivity());
+         if (paths.length > 0)
+            EXTERN_SD_FILES_PATH = paths[0] + "/ApkFiles";
          this.mFilesPath = EXTERN_SD_FILES_PATH;
       }
 

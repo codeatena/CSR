@@ -59,6 +59,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
         </activity>
         <activity android:label="@string/settings_shortcut" android:name=".CreateShortcut">
             <intent-filter>
@@ -66,7 +73,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <receiver android:name=".MediaPlayerBroadcastReceiver">
+
+        <receiver android:name=".MediaPlayerBroadcastReceiver" android:enabled="true" android:exported="true">
             <intent-filter android:priority="999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="com.android.intent.CSR" />
@@ -74,7 +82,7 @@
         </receiver>
 
         <activity android:name=".SubSettings" android:taskAffinity="com.general.mediaplayer.csr" />
-        <receiver android:name="com.general.mediaplayer.csr.services.CallAlarm" />
-
+        <receiver android:name=".services.CallAlarm">
+        </receiver>
     </application>
 </manifest>

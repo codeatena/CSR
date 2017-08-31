@@ -1,5 +1,6 @@
 package com.general.mediaplayer.csr;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
@@ -20,6 +21,8 @@ import android.os.PowerManager;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -57,7 +60,7 @@ import java.util.TimerTask;
 public class Settings extends PreferenceActivity
         implements ButtonBarHandler
 {
-    private static final String DIR_SUPER_MANAGER_KEY = "/mnt/external_sd/AdministratorPassword";
+    private  String DIR_SUPER_MANAGER_KEY = "/mnt/external_sd/AdministratorPassword1613";
     private static final String EXTRA_CLEAR_UI_OPTIONS = "settings:remove_ui_options";
     private static final String IN_SUPER_MODE_KEY = "inSuperModeKey";
     private static final String LOG_TAG = "Settings";
@@ -900,14 +903,14 @@ public class Settings extends PreferenceActivity
 
         super.onCreate(paramBundle);
 
-//        Dexter.withActivity(this)
-//                .withPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-//                .withListener(new PermissionListener() {
-//                    @Override public void onPermissionGranted(PermissionGrantedResponse response) {/* ... */}
-//                    @Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
-//                    @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
-//                })
-//                .check();
+        int permissionCheck1 = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck1 != PackageManager.PERMISSION_GRANTED || permissionCheck2 != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                    1003);
+        }
 
         if(this.getIntent().getBooleanExtra("restart_app_again", false)) {
             Log.v("", "===settings  onCreate===");
@@ -981,6 +984,9 @@ public class Settings extends PreferenceActivity
 
         Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
 
+        String paths[] = Utils.getExternalStorageDirectories(this);
+        if (paths.length > 0)
+            DIR_SUPER_MANAGER_KEY = paths[0] + "/AdministratorPassword1613";
     }
 
     @Override
