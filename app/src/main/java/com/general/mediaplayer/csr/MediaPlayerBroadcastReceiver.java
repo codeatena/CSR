@@ -160,6 +160,7 @@ public class MediaPlayerBroadcastReceiver extends BroadcastReceiver {
                         openApp(paramContext, str);
                      } else {
                         Intent var5 = new Intent(paramContext, Settings.class);
+                        var5.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                        var5.addFlags(268435456);
 //                        var5.putExtra("restart_app_again", false);
                         Log.v("", "===broadcastReceiver onBootCompleted===");
