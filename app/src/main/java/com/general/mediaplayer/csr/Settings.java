@@ -982,10 +982,8 @@ public class Settings extends PreferenceActivity
             }
         };
 
-        Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
-
         String paths[] = Utils.getExternalStorageDirectories(this);
-        if (paths.length > 0)
+        if (paths != null & paths.length > 0)
             DIR_SUPER_MANAGER_KEY = paths[0] + "/AdministratorPassword1613";
     }
 

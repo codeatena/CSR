@@ -186,7 +186,7 @@ public class MediaPlayerBroadcastReceiver extends BroadcastReceiver {
    public void onReceive(Context context, Intent intent) {
 
       String paths[] = Utils.getExternalStorageDirectories(context);
-      if (paths.length > 0)
+      if (paths != null & paths.length > 0)
          DIR_SUPER_MANAGER_KEY = paths[0] + "/AdministratorPassword1613";
 
       if(intent.getAction().equals(ACTION)) {

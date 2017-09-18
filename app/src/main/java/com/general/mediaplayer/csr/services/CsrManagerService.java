@@ -410,7 +410,7 @@ public class CsrManagerService extends Service {
       EventBus.getDefault().register(this);
 
       String paths[] = Utils.getExternalStorageDirectories(this);
-      if (paths.length > 0)
+      if (paths != null & paths.length > 0)
          DIR_SUPER_MANAGER_KEY = paths[0] + "/AdministratorPassword1613";
 
    }

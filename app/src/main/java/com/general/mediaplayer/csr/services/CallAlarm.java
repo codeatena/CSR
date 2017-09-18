@@ -65,8 +65,8 @@ public class CallAlarm extends BroadcastReceiver {
       Log.v("Diff Time" , String.valueOf(diff / 1000)) ;
       //if (Math.abs(diff) >= 3600000L){ // 1 hours reboot
       //if (Math.abs(diff) >= 21600000L){ // 6 hours reboot
-      if (Math.abs(diff) >= 86400000L){ // 24 hours reboot
-      //if (Math.abs(diff) >= 600000L){ // 10 mins reboot
+      //if (Math.abs(diff) >= 86400000L){ // 24 hours reboot
+      if (Math.abs(diff) >= 600000L){ // 10 mins reboot
 
          if (isReboot(context))
          {
