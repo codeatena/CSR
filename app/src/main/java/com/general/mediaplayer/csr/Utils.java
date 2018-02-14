@@ -214,7 +214,7 @@ public class Utils {
 
       List<String> results = new ArrayList<>();
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //Method 1 for KitKat & above
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //Method 1 for KitKat & above
          File[] externalDirs = context.getExternalFilesDirs(null);
 
          for (File file : externalDirs) {
@@ -234,6 +234,8 @@ public class Utils {
             }
          }
       }
+      else
+         return null;
 
       if(results.isEmpty()) { //Method 2 for all versions
          // better variation of: http://stackoverflow.com/a/40123073/5002496
