@@ -52,7 +52,7 @@ public class AppsInstallFragement extends Fragment {
       } else {
 
          String paths[] = Utils.getExternalStorageDirectories(this.getActivity());
-         if (paths != null & paths.length > 0)
+         if (paths != null)
             EXTERN_SD_FILES_PATH = paths[0] + "/ApkFiles";
          this.mFilesPath = EXTERN_SD_FILES_PATH;
       }

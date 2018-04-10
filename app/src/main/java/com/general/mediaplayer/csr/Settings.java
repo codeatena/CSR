@@ -983,7 +983,7 @@ public class Settings extends PreferenceActivity
         };
 
         String paths[] = Utils.getExternalStorageDirectories(this);
-        if (paths != null & paths.length > 0)
+        if (paths != null)
             DIR_SUPER_MANAGER_KEY = paths[0] + "/AdministratorPassword1613";
     }
 
