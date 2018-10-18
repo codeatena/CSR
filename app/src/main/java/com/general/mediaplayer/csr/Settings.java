@@ -532,15 +532,15 @@ public class Settings extends PreferenceActivity
 
     public void exitCsr()
     {
-        String str = getAutoRunAppPackage(this);
-        if (str != null)
-        {
-            this.mRestartAppAgain = false;
-            openApp(str);
-            finish();
-        }
-        else
-            this.mHandler.sendEmptyMessageDelayed(MSG_RESTART_APP_AGAIN, 1000L);
+//        String str = getAutoRunAppPackage(this);
+//        if (str != null)
+//        {
+//            this.mRestartAppAgain = false;
+//            openApp(str);
+//            finish();
+//        }
+//        else
+//            this.mHandler.sendEmptyMessageDelayed(MSG_RESTART_APP_AGAIN, 1000L);
     }
 
     public void exitCsr_Exitmenu()

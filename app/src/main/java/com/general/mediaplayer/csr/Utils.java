@@ -214,6 +214,7 @@ public class Utils {
          File[] externalDirs = context.getExternalFilesDirs(null);
 
          for (File file : externalDirs) {
+            if (file == null) continue;
             String path = file.getPath().split("/Android")[0];
             boolean addPath = Environment.isExternalStorageRemovable(file);
             if(addPath){
